@@ -4,7 +4,7 @@ organization := "com.derekschaefer"
 
 version := "0.1"
 
-scalaVersion := "2.10.0"
+scalaVersion := "2.10.4"
 
 scalacOptions ++= Seq(
   "-feature", "-unchecked", "-deprecation",
@@ -12,7 +12,7 @@ scalacOptions ++= Seq(
 )
 
 resolvers ++= Seq(
-  "Typesafe" at "http://repo.typesafe.com/typesafe/repo/"
+  "Typesafe" at "http://repo.typesafe.com/typesafe/releases/"
 )
 
 libraryDependencies ++= Seq(
