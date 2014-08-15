@@ -6,6 +6,7 @@ Currently supported:
 
 * HStore: Map[String, String]
 * Joda Time: DateTime, LocalDate, LocalTime, LocalDateTime
+* LTree: Seq[String]
 
 Future:
 
