@@ -11,14 +11,14 @@ import org.scalatest.{FunSuite, BeforeAndAfter}
 
 import JodaTime._
 
-case class DateTimeModel(id: Pk[Long] = NotAssigned, time: DateTime)
+case class DateTimeModel(id: Option[Long] = None, time: DateTime)
 
 object DateTimeModel {
 
   val table = "test_datetime"
 
   val simple = {
-    get[Pk[Long]](s"$table.id") ~
+    get[Option[Long]](s"$table.id") ~
     get[DateTime](s"$table.time") map {
       case id~time => DateTimeModel(id, time)
     }
@@ -67,7 +67,7 @@ class DateTimeTest extends FunSuite with BeforeAndAfter {
     DB.withConnection { implicit conn =>
       val time = new DateTime
       DateTimeModel.insert(DateTimeModel(time = time))
-      assert(DateTimeModel.findAll === Seq(DateTimeModel(Id(1), time)))
+      assert(DateTimeModel.findAll === Seq(DateTimeModel(Option(1), time)))
     }
   }
 
@@ -76,7 +76,7 @@ class DateTimeTest extends FunSuite with BeforeAndAfter {
       DateTimeModel.insert(DateTimeModel(time = new DateTime))
       val time = new DateTime
       DateTimeModel.update(1, DateTimeModel(time = time))
-      assert(DateTimeModel.findAll === Seq(DateTimeModel(Id(1), time)))
+      assert(DateTimeModel.findAll === Seq(DateTimeModel(Option(1), time)))
     }
   }
 

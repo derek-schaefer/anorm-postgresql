@@ -11,13 +11,13 @@ import org.scalatest.{FunSuite, BeforeAndAfter}
 
 import JodaTime._
 
-case class PeriodModel(id: Pk[Long] = NotAssigned, period: Period)
+case class PeriodModel(id: Option[Long] = None, period: Period)
 
 object PeriodModel {
   val table = "test_period"
 
   val simple = {
-    get[Pk[Long]](s"$table.id") ~
+    get[Option[Long]](s"$table.id") ~
     get[Period](s"$table.period") map {
       case id~period => PeriodModel(id,period)
     }
@@ -67,7 +67,7 @@ class PeriodTest extends FunSuite with BeforeAndAfter {
     DB.withConnection { implicit conn =>
       val period = new Period(1,1,1,1,1,1,1,1)
       PeriodModel.insert(PeriodModel(period = period))
-      assert(PeriodModel.findAll === Seq(PeriodModel(Id(1),period.normalizedStandard)))
+      assert(PeriodModel.findAll === Seq(PeriodModel(Option(1),period.normalizedStandard)))
     }
   }
 
@@ -75,7 +75,7 @@ class PeriodTest extends FunSuite with BeforeAndAfter {
     DB.withConnection { implicit conn =>
       val period = new Period(1,1,4,1,1,1,1,1)
       PeriodModel.insert(PeriodModel(period = period))
-      assert(PeriodModel.findAll === Seq(PeriodModel(Id(1),period.normalizedStandard)))
+      assert(PeriodModel.findAll === Seq(PeriodModel(Option(1),period.normalizedStandard)))
     }
   }
 
@@ -83,7 +83,7 @@ class PeriodTest extends FunSuite with BeforeAndAfter {
     DB.withConnection { implicit conn =>
       val period = new Period(1,1,1,47,1,1,1,1)
       PeriodModel.insert(PeriodModel(period = period))
-      assert(PeriodModel.findAll === Seq(PeriodModel(Id(1),period.normalizedStandard)))
+      assert(PeriodModel.findAll === Seq(PeriodModel(Option(1),period.normalizedStandard)))
     }
   }
 
@@ -93,7 +93,7 @@ class PeriodTest extends FunSuite with BeforeAndAfter {
       PeriodModel.insert(PeriodModel(period = period))
       val period2 = new Period(1,1,1,1,1,1,2,0)
       PeriodModel.update(1,PeriodModel(period = period2))
-      assert(PeriodModel.findAll === Seq(PeriodModel(Id(1),period2)))
+      assert(PeriodModel.findAll === Seq(PeriodModel(Option(1),period2)))
     }
   }
 

@@ -9,14 +9,14 @@ import org.scalatest.{FunSuite, BeforeAndAfter}
 
 import LTree._
 
-case class LTreeModel(id: Pk[Long] = NotAssigned, params: Seq[String])
+case class LTreeModel(id: Option[Long] = None, params: Seq[String])
 
 object LTreeModel {
 
   val table = "test_ltree"
 
   val simple = {
-    get[Pk[Long]](s"$table.id") ~
+    get[Option[Long]](s"$table.id") ~
       get[Seq[String]](s"$table.params") map {
       case id~params => LTreeModel(id, params)
     }
@@ -69,7 +69,7 @@ class LTreeTest extends FunSuite with BeforeAndAfter {
   test("insert") {
     DB.withConnection { implicit conn =>
       LTreeModel.insert(LTreeModel(params = Seq("a","b")))
-      assert(LTreeModel.findAll === Seq(LTreeModel(Id(1), Seq("a", "b"))))
+      assert(LTreeModel.findAll === Seq(LTreeModel(Option(1), Seq("a", "b"))))
     }
   }
 
@@ -77,7 +77,7 @@ class LTreeTest extends FunSuite with BeforeAndAfter {
     DB.withConnection { implicit conn =>
       LTreeModel.insert(LTreeModel(params = Seq("a","b")))
       LTreeModel.update(1, LTreeModel(params = Seq("a", "c")))
-      assert(LTreeModel.findAll === Seq(LTreeModel(Id(1),Seq("a", "c"))))
+      assert(LTreeModel.findAll === Seq(LTreeModel(Option(1),Seq("a", "c"))))
     }
   }
 
