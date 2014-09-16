@@ -11,14 +11,14 @@ import org.scalatest.{FunSuite, BeforeAndAfter}
 
 import JodaTime._
 
-case class LocalTimeModel(id: Pk[Long] = NotAssigned, time: LocalTime)
+case class LocalTimeModel(id: Option[Long] = None, time: LocalTime)
 
 object LocalTimeModel {
 
   val table = "test_localtime"
 
   val simple = {
-    get[Pk[Long]](s"$table.id") ~
+    get[Option[Long]](s"$table.id") ~
     get[LocalTime](s"$table.time") map {
       case id~time => LocalTimeModel(id, time)
     }
@@ -67,7 +67,7 @@ class LocalTimeTest extends FunSuite with BeforeAndAfter {
     DB.withConnection { implicit conn =>
       val time = new LocalTime
       LocalTimeModel.insert(LocalTimeModel(time = time))
-      assert(LocalTimeModel.findAll === Seq(LocalTimeModel(Id(1), time)))
+      assert(LocalTimeModel.findAll === Seq(LocalTimeModel(Option(1), time)))
     }
   }
 
@@ -76,7 +76,7 @@ class LocalTimeTest extends FunSuite with BeforeAndAfter {
       LocalTimeModel.insert(LocalTimeModel(time = new LocalTime))
       val time = new LocalTime
       LocalTimeModel.update(1, LocalTimeModel(time = time))
-      assert(LocalTimeModel.findAll === Seq(LocalTimeModel(Id(1), time)))
+      assert(LocalTimeModel.findAll === Seq(LocalTimeModel(Option(1), time)))
     }
   }
 

@@ -9,14 +9,14 @@ import org.scalatest.{FunSuite, BeforeAndAfter}
 
 import HStore._
 
-case class TestModel(id: Pk[Long] = NotAssigned, params: Map[String, String])
+case class TestModel(id: Option[Long] = None, params: Map[String, String])
 
 object TestModel {
 
   val table = "test_hstore"
 
   val simple = {
-    get[Pk[Long]](s"$table.id") ~
+    get[Option[Long]](s"$table.id") ~
     get[Map[String, String]](s"$table.params") map {
       case id~params => TestModel(id, params)
     }
@@ -77,7 +77,7 @@ class HStoreTest extends FunSuite with BeforeAndAfter {
   test("insert") {
     DB.withConnection { implicit conn =>
       TestModel.insert(TestModel(params = Map("asdf" -> "123")))
-      assert(TestModel.findAll === Seq(TestModel(Id(1), Map("asdf" -> "123"))))
+      assert(TestModel.findAll === Seq(TestModel(Option(1), Map("asdf" -> "123"))))
     }
   }
 
@@ -85,12 +85,12 @@ class HStoreTest extends FunSuite with BeforeAndAfter {
     DB.withConnection { implicit conn =>
       TestModel.insert(TestModel(params = Map("asdf" -> "123")))
       TestModel.update(1, TestModel(params = Map("asdf" -> "42")))
-      assert(TestModel.findAll === Seq(TestModel(Id(1), Map("asdf" -> "42"))))
+      assert(TestModel.findAll === Seq(TestModel(Option(1), Map("asdf" -> "42"))))
 
       TestModel.update(1, TestModel(params = Map("asdf" -> "asdf", "stuff" -> "things")))
-      assert(TestModel.findAll === Seq(TestModel(Id(1), Map("asdf" -> "asdf", "stuff" -> "things"))))
+      assert(TestModel.findAll === Seq(TestModel(Option(1), Map("asdf" -> "asdf", "stuff" -> "things"))))
       TestModel.update(1, TestModel(params = Map("asdf" -> "123")))
-      assert(TestModel.findAll === Seq(TestModel(Id(1), Map("asdf" -> "123"))))
+      assert(TestModel.findAll === Seq(TestModel(Option(1), Map("asdf" -> "123"))))
     }
   }
 
@@ -98,7 +98,7 @@ class HStoreTest extends FunSuite with BeforeAndAfter {
     DB.withConnection { implicit conn =>
       TestModel.insert(TestModel(params = Map("asdf" -> "123")))
       TestModel.insert(TestModel(params = Map("stuff" -> "things")))
-      assert(TestModel.hasParam("asdf") === Seq(TestModel(Id(1), Map("asdf" -> "123"))))
+      assert(TestModel.hasParam("asdf") === Seq(TestModel(Option(1), Map("asdf" -> "123"))))
     }
   }
 
