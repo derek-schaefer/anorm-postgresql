@@ -1,10 +1,8 @@
 package com.derekschaefer.anorm.postgresql
 
 import anorm._
-
 import org.joda.time._
 import org.joda.time.format._
-
 import org.postgresql.util.PGInterval
 
 object JodaTime {
@@ -14,12 +12,11 @@ object JodaTime {
   val dateTimeParser = ISODateTimeFormat.dateTimeParser()
   private val mathContext = new java.math.MathContext(4)
 
-  implicit def rowToLocalDate: Column[LocalDate] = Column.nonNull { (value, meta) =>
-    val MetaDataItem(qualified, nullable, clazz) = meta
+  implicit def rowToLocalDate: Column[LocalDate] = Column.nonNull { (value, _) =>
     value match {
       case d: java.sql.Date => Right(new LocalDate(d.getTime))
       case str: java.lang.String => Right(new LocalDate(dateParser.parseLocalDate(str)))
-      case _ => Left(TypeDoesNotMatch("Derp"))
+      case x => Left(TypeDoesNotMatch(x.getClass.toString))
     }
   }
 
@@ -29,12 +26,11 @@ object JodaTime {
     }
   }
 
-  implicit def rowToLocalTime: Column[LocalTime] = Column.nonNull { (value, meta) =>
-    val MetaDataItem(qualified, nullable, clazz) = meta
+  implicit def rowToLocalTime: Column[LocalTime] = Column.nonNull { (value, _) =>
     value match {
       case t: java.sql.Time => Right(new LocalTime(t.getTime))
       case str: java.lang.String => Right(new LocalTime(timeParser.parseLocalTime(str)))
-      case _ => Left(TypeDoesNotMatch("Derp"))
+      case x => Left(TypeDoesNotMatch(x.getClass.toString))
     }
   }
 
@@ -44,12 +40,11 @@ object JodaTime {
     }
   }
 
-  implicit def rowToDateTime: Column[DateTime] = Column.nonNull { (value, meta) =>
-    val MetaDataItem(qualified, nullable, clazz) = meta
+  implicit def rowToDateTime: Column[DateTime] = Column.nonNull { (value, _) =>
     value match {
       case ts: java.sql.Timestamp => Right(new DateTime(ts.getTime))
       case str: java.lang.String => Right(new DateTime(dateTimeParser.parseDateTime(str)))
-      case _ => Left(TypeDoesNotMatch("Derp"))
+      case x => Left(TypeDoesNotMatch(x.getClass.toString))
     }
   }
 
@@ -59,12 +54,11 @@ object JodaTime {
     }
   }
 
-  implicit def rowToLocalDateTime: Column[LocalDateTime] = Column.nonNull { (value, meta) =>
-    val MetaDataItem(qualified, nullable, clazz) = meta
+  implicit def rowToLocalDateTime: Column[LocalDateTime] = Column.nonNull { (value, _) =>
     value match {
       case ts: java.sql.Timestamp => Right(new LocalDateTime(ts.getTime))
       case str: java.lang.String => Right(new LocalDateTime(dateTimeParser.parseLocalDateTime(str)))
-      case _ => Left(TypeDoesNotMatch("Derp"))
+      case x => Left(TypeDoesNotMatch(x.getClass.toString))
     }
   }
 
@@ -74,8 +68,7 @@ object JodaTime {
     }
   }
 
-  implicit val rowToPeriod: Column[Period] = Column.nonNull { (value, meta) =>
-    val MetaDataItem(qualified,nullable, clazz) = meta
+  implicit val rowToPeriod: Column[Period] = Column.nonNull { (value, _) =>
     value match {
       case ts: org.postgresql.util.PGInterval => {
         val years = ts.getYears
